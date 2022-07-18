@@ -4293,27 +4293,12 @@ void Editor::GoToLine(Sci::Line lineNo) {
 		lineNo = pdoc->LinesTotal();
 	if (lineNo < 0)
 		lineNo = 0;
-
-#ifdef RB_MCIVEX
-	const PRectangle rcClient = GetTextRectangle();
-	const Point pt = PointMainCaret();
-	if (pt.y < rcClient.top || (pt.y + vs.lineHeight - 1) > rcClient.bottom)
-		VerticalCentreCaret();
-	else {
-		const Sci::Line lineDoc =
-			pdoc->SciLineFromPosition(sel.IsRectangular() ? sel.Rectangular().caret.Position() : sel.MainCaret());
-		const Sci::Line lineDisplay = pcs->DisplayFromDoc(lineDoc);
-		const Sci::Line newTop = topLine + lineNo - lineDisplay + 6;
-		if (topLine != newTop) {
-			SetTopLine(newTop > 0 ? newTop : 0);
-			RedrawRect(GetClientRectangle());
-		}
-	}
-#endif // RB_MCIVEX
-
 	SetEmptySelection(pdoc->LineStart(lineNo));
 	ShowCaretAtCurrentPosition();
-	EnsureCaretVisible();
+	EnsureCaretVisible();	
+#ifdef RB_MCIVEX
+		VerticalCentreCaret();
+#endif // RB_MCIVEX
 }
 
 static bool Close(Point pt1, Point pt2, Point threshold) noexcept {
